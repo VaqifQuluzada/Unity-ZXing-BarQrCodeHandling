@@ -1,0 +1,1 @@
+C:\Users\Vaqif\Documents\GitHub\Unity-ZXing-BarQrCodeHandling\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp\FramePacing\UnitySwappyWrapper.h

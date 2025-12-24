@@ -3,40 +3,48 @@ using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using ZXing;
+using ZXing.Common;
 
-public class AndroidCodeReaderSample : MonoBehaviour {
+public class AndroidCodeReaderSample : MonoBehaviour
+{
+    [SerializeField] private ARCameraManager cameraManager;
+    [SerializeField] private string lastResult;
 
-    [SerializeField]
-    private ARCameraManager cameraManager;
-    [SerializeField]
-    private string lastResult;
-
-    private Texture2D cameraImageTexture;
-
-    private IBarcodeReader barcodeReader = new BarcodeReader {
+    private readonly IBarcodeReader _barcodeReader = new BarcodeReader
+    {
         AutoRotate = false,
-        Options = new ZXing.Common.DecodingOptions {
+        Options = new DecodingOptions
+        {
             TryHarder = false
         }
     };
 
+    private Texture2D cameraImageTexture;
+
     private Result result;
 
-    private void OnEnable() {
+    private void OnEnable()
+    {
         cameraManager.frameReceived += OnCameraFrameReceived;
     }
 
-    private void OnDisable() {
+    private void OnDisable()
+    {
         cameraManager.frameReceived -= OnCameraFrameReceived;
     }
 
-    private void OnCameraFrameReceived(ARCameraFrameEventArgs eventArgs) {
+    private void OnGUI()
+    {
+        // show decoded text on screen
+        GUI.TextField(new Rect(10, 10, 256, 25), lastResult);
+    }
 
-        if (!cameraManager.TryAcquireLatestCpuImage(out XRCpuImage image)) {
-            return;
-        }
+    private void OnCameraFrameReceived(ARCameraFrameEventArgs eventArgs)
+    {
+        if (!cameraManager.TryAcquireLatestCpuImage(out var image)) return;
 
-        var conversionParams = new XRCpuImage.ConversionParams {
+        var conversionParams = new XRCpuImage.ConversionParams
+        {
             // Get the entire image.
             inputRect = new RectInt(0, 0, image.width, image.height),
 
@@ -51,7 +59,7 @@ public class AndroidCodeReaderSample : MonoBehaviour {
         };
 
         // See how many bytes you need to store the final image.
-        int size = image.GetConvertedDataSize(conversionParams);
+        var size = image.GetConvertedDataSize(conversionParams);
 
         // Allocate a buffer to store the image.
         var buffer = new NativeArray<byte>(size, Allocator.Temp);
@@ -80,17 +88,14 @@ public class AndroidCodeReaderSample : MonoBehaviour {
         buffer.Dispose();
 
         // Detect and decode the barcode inside the bitmap
-        result = barcodeReader.Decode(cameraImageTexture.GetPixels32(), cameraImageTexture.width, cameraImageTexture.height);
+        result = _barcodeReader.Decode(cameraImageTexture.GetPixels32(), cameraImageTexture.width,
+            cameraImageTexture.height);
 
         // Do something with the result
-        if (result != null) {
+        if (result != null)
+        {
             lastResult = result.Text + " " + result.BarcodeFormat;
             print(lastResult);
         }
-    }
-
-    private void OnGUI() {
-        // show decoded text on screen
-        GUI.TextField(new Rect(10, 10, 256, 25), lastResult);
     }
 }
