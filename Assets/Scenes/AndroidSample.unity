@@ -646,7 +646,7 @@ MonoBehaviour:
   m_AutoFocus: 1
   m_ImageStabilization: 0
   m_LightEstimation: 0
-  m_FacingDirection: 1
+  m_FacingDirection: 2
   m_RenderMode: 0
 --- !u!81 &414483581
 AudioListener:
@@ -1215,7 +1215,7 @@ MonoBehaviour:
   <trackablesChanged>k__BackingField:
     m_PersistentCalls:
       m_Calls: []
-  m_FacePrefab: {fileID: 0}
+  m_FacePrefab: {fileID: 6509752344253810650, guid: e71b58e531464d0409ace199cb7ebd77, type: 3}
   m_MaximumFaceCount: 1
 --- !u!114 &1561311776
 MonoBehaviour:
